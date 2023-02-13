@@ -1,0 +1,25 @@
+{% extends 'base.html' %} 
+
+{% block content %}
+<h1 class="text-2xl"><strong>{{ card.number }}</strong></h1>
+<form action="" method="post">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" value="Submit", name="change status">
+</form>
+{%if orders%}
+    {% for order in orders %}
+        <p>
+            {{order.num}}
+        </p>
+    {%endfor%}
+{%else%}
+    <p>
+        There are no any orders
+    </p>
+{%endif%}
+<form action="{{card.get_absolute_url_to_delete}}" method="post">
+    {% csrf_token %}
+    <input type="submit" value="Delete", name="delete">
+</form>
+{% endblock %}
