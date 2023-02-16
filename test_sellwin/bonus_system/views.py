@@ -1,3 +1,6 @@
+
+
+
 from django.shortcuts import render
 from django.views import generic
 from django.views.generic.edit import FormMixin, ModelFormMixin
@@ -10,7 +13,7 @@ from django.utils import timezone
 
 from .forms import BonusCardStateForm, BonusCardGenerateForm
 from .models import Card, Order, Product
-from .maxin import DeleteCardToTrashMixin, TrashOptionsMixin
+from .mixin import DeleteCardToTrashMixin, TrashOptionsMixin
 
 
 class BonusCardDetailView(generic.DetailView, FormMixin):
@@ -75,11 +78,12 @@ class BonusCardGenerateView(generic.TemplateView, FormMixin):
                 self.card_numbers = form.get_generated_cards()
                 for card_num in self.card_numbers:
                     card = Card(number=card_num, release_date=cleaned_data['release_date'],
-                            end_date=cleaned_data['end_date'], series=cleaned_data['series'])
+                                end_date=cleaned_data['end_date'], series=cleaned_data['series'])
                     card.save()
                 return self.form_valid(form)
-            else: 
+            else:
                 return self.form_invalid(form)
+
 
 class BonusCardDeleteView(DeleteCardToTrashMixin):
     model = Card
@@ -98,12 +102,12 @@ class TrashListView(generic.ListView):
 
     def get_queryset(self):
         try:
-            q = Card.objects.filter(deleted = True)
+            q = Card.objects.filter(deleted=True)
         except Card.DoesNotExist:
             return None
         else:
             return q
-    
+
     def get_paginate_by(self, queryset):
         return self.paginate_by if queryset else None
 
@@ -130,3 +134,7 @@ class SearchListView(generic.ListView):
                                        | Q(release_date__contains=query)
                                        | Q(end_date__contains=query)
                                        | Q(state__icontains=query))
+
+
+################### RESTAPI ###########################
+

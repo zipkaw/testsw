@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'bonus_system.apps.BonusSystemConfig'
+    'bonus_system.apps.BonusSystemConfig', 
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
