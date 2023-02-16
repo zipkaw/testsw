@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from ..bonus_system.models import Card, Product, Order
+from .models import Card, Product, Order
 
 # product -> order -> card 
 

@@ -1,5 +1,6 @@
 
-
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from django.shortcuts import render
 from django.views import generic
@@ -138,3 +139,8 @@ class SearchListView(generic.ListView):
 
 ################### RESTAPI ###########################
 
+class InfoAboutCard(APIView): 
+
+    def get(self, request): 
+        pass 
+        return Response(...)
