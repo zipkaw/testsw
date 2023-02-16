@@ -1,0 +1,16 @@
+{% extends 'base.html' %} 
+
+{% block content %}
+  <h1 class="text-2xl font-bold">Deleted bonus cards</h1>
+  {% if card_list %}
+  <ul>
+    {% for card in card_list %}
+      <li>
+        <a href="{{card.get_url_to_trash}}" class="text-2xl"> {{card.get_series_display}} — {{card.number}}</a>
+      </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+    <p>There are no any cards.</p>
+  {% endif %}
+{% endblock %}

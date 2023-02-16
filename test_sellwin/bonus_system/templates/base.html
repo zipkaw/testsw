@@ -23,7 +23,10 @@
         <div class="col-sm-2">
         {% block sidebar %}
           <ul class='.sidebar-nav'>
-            
+            <a href="{%url 'trash'%}">Trash</a>
+            <form method="get" action="{%url 'search'%}">
+              <input class="searchfield" name="search" type="text" value="{{ request.GET.q }}">
+            </form>
           </ul>
         {% endblock %}
         </div>

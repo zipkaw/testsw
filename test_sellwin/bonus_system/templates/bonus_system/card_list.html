@@ -7,7 +7,7 @@
     {% for card in card_list %}
       {%if not card.deleted %}
       <li>
-        <a href="{{ card.get_absolute_url}}" class="text-2xl"> {{card.series}} — {{card.number}}</a>
+        <a href="{{ card.get_absolute_url}}" class="text-2xl"> {{card.get_series_display}} — {{card.number}}</a>
       </li>
       <div class='.info_block'>
         <p>
@@ -17,7 +17,7 @@
             Valid until: {{card.end_date}}
         </p>
         <p>
-            Status: {{card.state}}
+            Status: {{card.get_state_display}}
         </p>
       </div>
       {% endif %}

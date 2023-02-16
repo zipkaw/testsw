@@ -18,8 +18,10 @@
         There are no any orders
     </p>
 {%endif%}
+{%if not card.deleted%}
 <form action="{{card.get_absolute_url_to_delete}}" method="post">
     {% csrf_token %}
     <input type="submit" value="Delete", name="delete">
 </form>
+{%endif%}
 {% endblock %}

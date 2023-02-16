@@ -1,7 +1,8 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
-from django.utils import timezone
+from django.utils.timezone import now
 from dateutil.relativedelta import relativedelta
+
 from django.urls import reverse
 
 
@@ -13,13 +14,13 @@ class Card(models.Model):
         STUFF = 'SF', ('Staff card')
         DEFAULT = 'DF', ('Default')
         PRIME = 'PR', ('Prime')
-
+    
     series = models.CharField(max_length=2, choices=CardSeries.choices)
     number = models.CharField(max_length=16, primary_key=True)
-    release_date = models.DateTimeField(null=True, blank=True)
-    end_date = models.DateTimeField(null=True, blank=True)
+    release_date = models.DateTimeField(default=now())
+    end_date = models.DateTimeField(default=now() + relativedelta(month=6))
     last_use_date = models.DateTimeField(null=True, blank=True)
-    total_orders = models.IntegerField(default=0)
+    total_orders = models.IntegerField(default=0, null=True, blank=True)
 
     class CardStates(models.TextChoices):
         ACTIVED = 'AC', ('Activated')
@@ -33,16 +34,17 @@ class Card(models.Model):
     # orders = models.ForeignKey(Order, on_delete=models.CASCADE)
 
     discount = models.IntegerField(validators=PERCENTAGE_VALIDATOR, null=True, blank=True)
-    deleted = models.BooleanField(verbose_name='Was deleted')
+    deleted = models.BooleanField(verbose_name='Was deleted', default=False, null=True, blank=True)
 
     class Meta:
-        pass
+        #ordering = ['number']
+        get_latest_by = "release_date"
     
     def is_active(self):
         return True if self.state == 'AC' else False
     
     def is_overdue(self):
-        if timezone.now() > self.end_date.date(): 
+        if now() > self.end_date.date(): 
             state = self.CardStates.OVERDUE
             return True
         return False
@@ -51,13 +53,20 @@ class Card(models.Model):
         return self.deleted
 
     def __str__(self) -> str:
-        return f'{self.number} bonus card'
+        return f'{self.number}'
     
     def get_absolute_url(self): 
         return reverse('card', kwargs={'pk' : self.pk})
     
+    def get_url_to_trash(self): 
+        return reverse('trash', kwargs={'pk' : self.pk})
+    
     def get_absolute_url_to_delete(self): 
         return reverse('delete-card', kwargs={'pk' : self.pk})
+    
+    def generate_card_number(self):
+        pass
+    
 
 class Order(models.Model):
 
@@ -66,7 +75,7 @@ class Order(models.Model):
     sell_price = models.IntegerField(null=True, blank=True)
     order_discount = models.IntegerField(validators=PERCENTAGE_VALIDATOR, null=True, blank=True)
     total_discount = models.IntegerField(null=True, blank=True)
-    card = models.ForeignKey(Card, on_delete=models.DO_NOTHING)
+    card = models.ForeignKey(Card, on_delete=models.CASCADE)
     
     @property
     def count_discount(self):
@@ -85,5 +94,4 @@ class Product(models.Model):
 
     def __str__(self) -> str:
         return f'Product: {self.name}'
-
 
