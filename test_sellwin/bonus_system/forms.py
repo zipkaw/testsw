@@ -51,7 +51,7 @@ class BonusCardGenerateForm(forms.ModelForm, forms.Form):
             else:
                 cards.append(card)
         return cards
-
+    
     def card_factory(self, number, count):
         num = [int(number[x:x+2]) for x in range(0, len(number), 2)]
         str_num = ''

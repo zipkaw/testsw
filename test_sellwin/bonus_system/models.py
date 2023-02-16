@@ -16,7 +16,7 @@ class Card(models.Model):
         PRIME = 'PR', ('Prime')
     
     series = models.CharField(max_length=2, choices=CardSeries.choices)
-    number = models.CharField(max_length=16, primary_key=True)
+    number = models.CharField(max_length=16, unique=True)
     release_date = models.DateTimeField(default=now())
     end_date = models.DateTimeField(default=now() + relativedelta(month=6))
     last_use_date = models.DateTimeField(null=True, blank=True)
