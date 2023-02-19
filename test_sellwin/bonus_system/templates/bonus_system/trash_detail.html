@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="text-2xl"><strong>{{ card.number }}</strong></h1>
+<form action="" method="post">
+    {% csrf_token %}
+    <input type="submit" value="Delete permanently" , name="delete-permanently">
+    <input type="submit" value="Restore" , name="restore">
+</form>
+<div class='.info_block'>
+    <p>
+        Release date: {{card.release_date}}
+        Valid until: {{card.end_date}}
+        Status: {{card.get_state_display}}
+    </p>
+</div>
+
+{% endblock %}

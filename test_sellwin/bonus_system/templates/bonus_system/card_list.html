@@ -1,0 +1,29 @@
+{% extends 'base.html' %} 
+
+{% block content %}
+  <h1 class="text-2xl font-bold">Bonus cards</h1>
+  {% if card_list %}
+  <ul>
+    {% for card in card_list %}
+      {%if not card.deleted %}
+      <li>
+        <a href="{{ card.get_absolute_url}}" class="text-2xl"> {{card.get_series_display}} — {{card.number}}</a>
+      </li>
+      <div class='.info_block'>
+        <p>
+            Release date: {{card.release_date}}
+        </p>
+        <p>
+            Valid until: {{card.end_date}}
+        </p>
+        <p>
+            Status: {{card.get_state_display}}
+        </p>
+      </div>
+      {% endif %}
+    {% endfor %}
+  </ul>
+  {% else %}
+    <p>There are no any cards.</p>
+  {% endif %}
+{% endblock %}

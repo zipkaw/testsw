@@ -1,0 +1,14 @@
+{% extends 'base.html' %} 
+
+{% block content %}
+<form method="post" action="{%url 'generate'%}">
+    {% csrf_token %}
+    <table>
+      <tr>
+        <td>{{ form }}</td>
+      </tr>
+    </table>
+    <input type="submit" value="Create cards" name="generate">
+  </form>
+
+{% endblock %}
