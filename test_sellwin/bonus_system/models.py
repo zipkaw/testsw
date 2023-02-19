@@ -1,12 +1,19 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
-from django.utils.timezone import now, timedelta
+from django.utils.timezone import now
 from dateutil.relativedelta import relativedelta
-
+from typing import Optional, Iterable
 from django.urls import reverse
 
 
 PERCENTAGE_VALIDATOR = [MinValueValidator(0), MaxValueValidator(100)]
+MIN_VALUE_VALIDATOR = [MinValueValidator(0)]
+
+
+def current_date_validarion():
+    """Notice: Validator message uses UTC+0"""
+    return [MinValueValidator(now() - relativedelta(minutes=5)),
+            MaxValueValidator(now() + relativedelta(minutes=5))]
 
 
 class Card(models.Model):
@@ -23,7 +30,8 @@ class Card(models.Model):
     release_date = models.DateTimeField(default=now)
     end_date = models.DateTimeField(default=now + relativedelta(months=6))
     last_use_date = models.DateTimeField(null=True, blank=True)
-    total_orders = models.IntegerField(default=0, null=True, blank=True)
+    total_orders = models.IntegerField(
+        default=0, null=True, blank=True, validators=MIN_VALUE_VALIDATOR)
 
     class CardStates(models.TextChoices):
         ACTIVED = 'AC', ('Activated')
@@ -34,16 +42,10 @@ class Card(models.Model):
                              choices=CardStates.choices,
                              default=CardStates.NOT_ACTIVATED,)
 
-    # orders = models.ForeignKey(Order, on_delete=models.CASCADE)
-
     discount = models.IntegerField(
-        validators=PERCENTAGE_VALIDATOR, null=True, blank=True)
+        validators=PERCENTAGE_VALIDATOR, null=True, blank=True, default=0)
     deleted = models.BooleanField(
         verbose_name='Was deleted', default=False, null=True, blank=True)
-
-    class Meta:
-        # ordering = ['number']
-        get_latest_by = "release_date"
 
     def is_active(self):
         return True if self.state == 'AC' else False
@@ -69,34 +71,51 @@ class Card(models.Model):
     def get_absolute_url_to_delete(self):
         return reverse('delete-card', kwargs={'pk': self.pk})
 
-    def generate_card_number(self):
-        pass
-
 
 class Order(models.Model):
 
-    num = models.CharField(max_length=50)
-    date = models.DateTimeField(null=True, blank=True)
-    sell_price = models.IntegerField(null=True, blank=True)
+    num = models.CharField(max_length=50, unique=True)
+    date = models.DateTimeField(
+        null=True, blank=True, validators=current_date_validarion())
+    sell_price = models.FloatField(null=True, blank=True)
     order_discount = models.IntegerField(
-        validators=PERCENTAGE_VALIDATOR, null=True, blank=True)
-    total_discount = models.IntegerField(null=True, blank=True)
-    card = models.ForeignKey(Card, on_delete=models.CASCADE)
+        validators=PERCENTAGE_VALIDATOR, null=True, blank=True, default=0)
+    total_discount = models.FloatField(
+        null=True, blank=True, validators=MIN_VALUE_VALIDATOR, default=0)
+    card = models.ForeignKey(to=Card, on_delete=models.CASCADE,
+                             to_field='number', related_name='orders')
+
+    def _count_discount(self):
+        """
+        The property set current discount value for order, corresponds to the 
+        discount card value and calculate total discount for order
+        """
+        self.total_discount = self.sell_price * (self.card.discount/100)
+        self.order_discount = self.card.discount
+        return self.total_discount
 
     @property
-    def count_discount(self):
-        return self.sell_price * (1 - self.order_discount)
+    def total_price(self):
+        """Return order price with discount"""
+        return self.sell_price - self.total_discount
+
+    def save(self, *args, **kwargs) -> None:
+        self._count_discount()
+        return super().save(*args, **kwargs)
 
     def __str__(self) -> str:
-        return f'Order: {self.num}'
+        return self.num
 
 
 class Product(models.Model):
 
-    order = models.ManyToManyField(Order)
+    order = models.ManyToManyField(
+        to=Order, related_name='products', blank=True)
     name = models.CharField(max_length=50)
-    price = models.IntegerField(null=True, blank=True)
-    discount_cost = models.IntegerField(null=True, blank=True)
+    price = models.FloatField(
+        null=True, blank=True, validators=MIN_VALUE_VALIDATOR)
+    discount_price = models.FloatField(
+        null=True, blank=True, validators=MIN_VALUE_VALIDATOR, default=0)
 
     def __str__(self) -> str:
-        return f'Product: {self.name}'
+        return self.name
