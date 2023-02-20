@@ -1,11 +1,7 @@
-
-# from django.utils.decorators import method_decorator
-# from django.views.decorators.cache import cache_page
-
-from django_filters.rest_framework import DjangoFilterBackend, OrderingFilter
 from rest_framework import viewsets
 from rest_framework.renderers import StaticHTMLRenderer
 from rest_framework import generics
+from rest_framework.reverse import reverse as rest_reverse
 from rest_framework.views import APIView
 from rest_framework.reverse import reverse_lazy
 from rest_framework.response import Response
@@ -17,7 +13,7 @@ from django.views.generic.edit import FormMixin, ModelFormMixin
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.views.generic.detail import BaseDetailView
-from django.db.models import Q
+from django.db.models import Q, Prefetch
 from django.utils import timezone
 
 from .forms import BonusCardStateForm, BonusCardGenerateForm
@@ -170,9 +166,9 @@ class SearchListView(generic.ListView):
 @api_view(['GET'])
 def api_root(request, format=None):
     return Response({
-        'cards': reverse_lazy('card-list', request=request, format=format),
-        'orders': reverse_lazy('order-list', request=request, format=format),
-        'products': reverse_lazy('product-list', request=request, format=format),
+        'cards': rest_reverse('card-list', request=request, format=format),
+        'orders': rest_reverse('order-list', request=request, format=format),
+        'products': rest_reverse('product-list', request=request, format=format),
     })
 
 
@@ -205,7 +201,11 @@ class InfoAboutCard(generics.RetrieveAPIView):
     filterset_class = OrdersFilter
 
     def get_object(self):
-        return self.filter_queryset(Card.objects.filter(number=self.kwargs['number'])).first()
+        card_obj = Card.objects.filter(number=self.kwargs['number'])
+        orders = self.filter_queryset(card_obj.first().orders)
+        card_obj = card_obj.prefetch_related(Prefetch(queryset=orders,
+                                                      lookup='orders'))
+        return card_obj.first()
 
 
 class CreateOrders(generics.CreateAPIView):
@@ -221,4 +221,3 @@ class CreateOrders(generics.CreateAPIView):
         obj = Order.objects.filter(card=self.kwargs['number'])
         self.check_object_permissions(self.request, obj)
         return obj
-

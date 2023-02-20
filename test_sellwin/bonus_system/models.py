@@ -104,6 +104,7 @@ class Order(models.Model):
                              to_field='number',
                              related_name='orders')
 
+
     def _count_discount(self):
         """
         The method set current discount value for order, corresponds to the

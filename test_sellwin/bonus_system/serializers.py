@@ -1,4 +1,7 @@
 from rest_framework import serializers
+
+from django.shortcuts import get_object_or_404
+
 from .models import Card, Product, Order
 
 
@@ -37,7 +40,6 @@ class CreateOrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = [
-            'num',
             'products',
         ]
 
@@ -45,21 +47,26 @@ class CreateOrderSerializer(serializers.ModelSerializer):
         products = validated_data.pop('products')
         card_number = self.context['view'].kwargs['number']
         products_total_price = 0
+        
+        try:
+            last_order_num = str(int(Order.objects.latest('pk').num)+1)
+        except Order.DoesNotExist:
+            last_order_num = '0'
 
         for product in products:
             products_total_price += product.discount_price
 
-        try:
-            card = Card.objects.get(number=card_number)
-        except Card.DoesNotExist:
-            return None
-        else:
-            order = Order(card=card, **validated_data,
-                          sell_price=products_total_price)
-            order.save()
-            card.last_use_date = order.date
-            card.total_orders += order.total_price
-            card.save()
+        card = get_object_or_404(Card, number=card_number)
+        order = Order(card=card,
+                      **validated_data,
+                      sell_price=products_total_price,
+                      num=last_order_num,)
+
+        order.save()
+        card.last_use_date = order.date
+        card.total_orders += order.total_price
+        card.save()
+
         for product in products:
             product.order.add(order)
 
@@ -96,4 +103,5 @@ class BonusCardListSerializer(serializers.HyperlinkedModelSerializer):
             'series',
             'card_url',
             'create_order',
-            'discount',]
+            'discount',
+            'total_orders',]

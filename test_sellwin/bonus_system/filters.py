@@ -4,6 +4,7 @@ from django.db.models import Prefetch
 
 from .models import Order
 
+
 class OrdersFilter(filters.FilterSet):
 
     date_gt = filters.DateFilter(
@@ -17,9 +18,6 @@ class OrdersFilter(filters.FilterSet):
         return {'__'.join([name, expr]): value}
 
     def filter_order_date(self, queryset, name, value):
-        orders = Order.objects.filter(**self.lookup_expr(name.replace('date_', ''),
-                                                         'date',
-                                                         value))
-        card_obj = queryset.prefetch_related(Prefetch(queryset=orders,
-                                                      lookup='orders'))
-        return card_obj
+        return queryset.filter(**self.lookup_expr(name.replace('date_', ''),
+                                                  'date',
+                                                  value))
