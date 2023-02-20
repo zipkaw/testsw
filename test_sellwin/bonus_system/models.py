@@ -28,7 +28,6 @@ class CardStates(models.TextChoices):
 
 
 class Card(models.Model):
-
     series = models.CharField(max_length=2, choices=CardSeries.choices)
     number = models.CharField(max_length=16, unique=True)
     release_date = models.DateTimeField(default=now())
@@ -53,7 +52,6 @@ class Card(models.Model):
         default=False,
         null=True,
         blank=True)
-
     @property
     def is_active(self):
         return True if self.state == 'AC' else False

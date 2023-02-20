@@ -1,15 +1,15 @@
 
 from django_filters import rest_framework as filters
+from django.db.models import Prefetch
 
-from .models import Order, Card
+from .models import Order
 
-
-class BonusCardFilter(filters.FilterSet):
+class OrdersFilter(filters.FilterSet):
 
     date_gt = filters.DateFilter(
-        method='filter_order_date', field_name='date_greater')
+        method='filter_order_date', field_name='date_gt')
     date_lt = filters.DateFilter(
-        method='filter_order_date', field_name='date_less')
+        method='filter_order_date', field_name='date_lt')
 
     @staticmethod
     def lookup_expr(expr: str, name: str, value) -> dict:
@@ -17,7 +17,9 @@ class BonusCardFilter(filters.FilterSet):
         return {'__'.join([name, expr]): value}
 
     def filter_order_date(self, queryset, name, value):
-        card_obj = queryset
-        card_obj.orders.set(Order.objects.filter(
-            **self.lookup_expr(name.replace('date_', ''), 'date', value)))
+        orders = Order.objects.filter(**self.lookup_expr(name.replace('date_', ''),
+                                                         'date',
+                                                         value))
+        card_obj = queryset.prefetch_related(Prefetch(queryset=orders,
+                                                      lookup='orders'))
         return card_obj

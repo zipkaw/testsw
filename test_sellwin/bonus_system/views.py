@@ -24,7 +24,7 @@ from .forms import BonusCardStateForm, BonusCardGenerateForm
 from .models import Card, Order, Product
 from .mixins import UpdateFieldMixin
 from .serializers import BonusCardListSerializer, BonusCardDetailSerializer, OrdersSerializer, ProductSerializer, CreateOrderSerializer
-from .filters import BonusCardFilter
+from .filters import OrdersFilter
 
 
 class BonusCardDetailView(generic.DetailView, FormMixin):
@@ -181,27 +181,31 @@ class CardList(generics.ListAPIView):
     serializer_class = BonusCardListSerializer
     lookup_field = 'number'
 
+
 class OrderList(generics.ListAPIView):
     queryset = Order.objects.all()
     serializer_class = OrdersSerializer
 
+
 class OrderDetail(generics.RetrieveAPIView):
     serializer_class = OrdersSerializer
+
     def get_object(self):
         return Order.objects.get(id=self.kwargs['pk'])
-    
-class ProductList(generics.ListAPIView): 
+
+
+class ProductList(generics.ListAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
+
 class InfoAboutCard(generics.RetrieveAPIView):
-    queryset = Card.objects.all()
     serializer_class = BonusCardDetailSerializer
     lookup_field = 'number'
-    filterset_class = BonusCardFilter
+    filterset_class = OrdersFilter
 
-    def get_object(self):   
-        return self.filter_queryset(Card.objects.get(number=self.kwargs['number']))
+    def get_object(self):
+        return self.filter_queryset(Card.objects.filter(number=self.kwargs['number'])).first()
 
 
 class CreateOrders(generics.CreateAPIView):
@@ -213,9 +217,8 @@ class CreateOrders(generics.CreateAPIView):
         context['number'] = self.kwargs['number']
         return context
 
-    def get_queryset(self):
+    def get_object(self):
         obj = Order.objects.filter(card=self.kwargs['number'])
         self.check_object_permissions(self.request, obj)
         return obj
-    
-    
+
