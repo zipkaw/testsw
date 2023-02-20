@@ -24,7 +24,7 @@ from .forms import BonusCardStateForm, BonusCardGenerateForm
 from .models import Card, Order, Product
 from .mixins import UpdateFieldMixin
 from .serializers import BonusCardListSerializer, BonusCardDetailSerializer, OrdersSerializer, ProductSerializer, CreateOrderSerializer
-from .filters import OrderDateFilter, BonusCardFilter, OrderFilter
+from .filters import BonusCardFilter
 
 
 class BonusCardDetailView(generic.DetailView, FormMixin):
@@ -198,28 +198,13 @@ class InfoAboutCard(generics.RetrieveAPIView):
     queryset = Card.objects.all()
     serializer_class = BonusCardDetailSerializer
     lookup_field = 'number'
+    filterset_class = BonusCardFilter
 
-    def filter(self, request):
-        filter_query = None
-        if request.query_params.get('date_gt') is not None:
-            filter_query = {''.join(['date__gt'])
-                                    : request.query_params.get('date_gt')}
-        if request.query_params.get('date_lt') is not None:
-            filter_query = {''.join(['date__lt'])
-                                    : request.query_params.get('date_lt')}
-        return filter_query
-
-    def get_object(self):
-        card_obj = Card.objects.get(number=self.kwargs['number'])
-        filter_query = self.filter(self.request)
-        if filter_query is not None:
-            card_obj.orders.set(Order.objects.filter(Q(card=card_obj)
-                                                     & Q(**filter_query)))
-        return card_obj
+    def get_object(self):   
+        return self.filter_queryset(Card.objects.get(number=self.kwargs['number']))
 
 
 class CreateOrders(generics.CreateAPIView):
-
     serializer_class = CreateOrderSerializer
     lookup_field = 'number'
 

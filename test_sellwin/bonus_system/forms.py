@@ -34,10 +34,8 @@ class BonusCardGenerateForm(forms.ModelForm, forms.Form):
 
     def get_generated_cards(self) -> list:
         cards = []
-
         # If Cards object does not exists create cards starting with
         # default number
-
         DEFAULT_NUM = '0000000000000000'
         count = self.clean()['card_count']
 
@@ -77,5 +75,4 @@ class BonusCardGenerateForm(forms.ModelForm, forms.Form):
                     str_num += '0'
                 str_num += str(subnum)
             cards.append(str_num)
-
         return cards

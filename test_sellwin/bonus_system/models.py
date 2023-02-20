@@ -2,7 +2,6 @@ from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils.timezone import now
 from dateutil.relativedelta import relativedelta
-from typing import Optional, Iterable
 from django.urls import reverse
 
 
@@ -16,46 +15,57 @@ def current_date_validarion():
             MaxValueValidator(now() + relativedelta(minutes=5))]
 
 
+class CardSeries(models.TextChoices):
+    STUFF = 'SF', ('Staff card')
+    DEFAULT = 'DF', ('Default')
+    PRIME = 'PR', ('Prime')
+
+
+class CardStates(models.TextChoices):
+    ACTIVED = 'AC', ('Activated')
+    NOT_ACTIVATED = 'NA', ('Not activated')
+    OVERDUE = 'OD', ('Overdue')
+
+
 class Card(models.Model):
-
-    now = now()
-
-    class CardSeries(models.TextChoices):
-        STUFF = 'SF', ('Staff card')
-        DEFAULT = 'DF', ('Default')
-        PRIME = 'PR', ('Prime')
 
     series = models.CharField(max_length=2, choices=CardSeries.choices)
     number = models.CharField(max_length=16, unique=True)
-    release_date = models.DateTimeField(default=now)
-    end_date = models.DateTimeField(default=now + relativedelta(months=6))
+    release_date = models.DateTimeField(default=now())
+    end_date = models.DateTimeField(default=now() + relativedelta(months=6))
     last_use_date = models.DateTimeField(null=True, blank=True)
     total_orders = models.IntegerField(
-        default=0, null=True, blank=True, validators=MIN_VALUE_VALIDATOR)
-
-    class CardStates(models.TextChoices):
-        ACTIVED = 'AC', ('Activated')
-        NOT_ACTIVATED = 'NA', ('Not activated')
-        OVERDUE = 'OD', ('Overdue')
-
-    state = models.CharField(max_length=2,
-                             choices=CardStates.choices,
-                             default=CardStates.NOT_ACTIVATED,)
-
+        default=0,
+        null=True,
+        blank=True,
+        validators=MIN_VALUE_VALIDATOR)
+    state = models.CharField(
+        max_length=2,
+        choices=CardStates.choices,
+        default=CardStates.NOT_ACTIVATED,)
     discount = models.IntegerField(
-        validators=PERCENTAGE_VALIDATOR, null=True, blank=True, default=0)
+        validators=PERCENTAGE_VALIDATOR,
+        null=True,
+        blank=True,
+        default=0)
     deleted = models.BooleanField(
-        verbose_name='Was deleted', default=False, null=True, blank=True)
+        verbose_name='Was deleted',
+        default=False,
+        null=True,
+        blank=True)
 
+    @property
     def is_active(self):
         return True if self.state == 'AC' else False
 
+    @property
     def is_overdue(self):
         if now() > self.end_date.date():
-            state = self.CardStates.OVERDUE
+            CardStates.OVERDUE
             return True
         return False
 
+    @property
     def is_deleted(self):
         return self.deleted
 
@@ -76,18 +86,29 @@ class Order(models.Model):
 
     num = models.CharField(max_length=50, unique=True)
     date = models.DateTimeField(
-        null=True, blank=True, validators=current_date_validarion())
+        null=True,
+        blank=True,
+        validators=current_date_validarion(),
+        default=now())
     sell_price = models.FloatField(null=True, blank=True)
     order_discount = models.IntegerField(
-        validators=PERCENTAGE_VALIDATOR, null=True, blank=True, default=0)
+        validators=PERCENTAGE_VALIDATOR,
+        null=True,
+        blank=True,
+        default=0)
     total_discount = models.FloatField(
-        null=True, blank=True, validators=MIN_VALUE_VALIDATOR, default=0)
-    card = models.ForeignKey(to=Card, on_delete=models.CASCADE,
-                             to_field='number', related_name='orders')
+        null=True,
+        blank=True,
+        validators=MIN_VALUE_VALIDATOR,
+        default=0)
+    card = models.ForeignKey(to=Card,
+                             on_delete=models.CASCADE,
+                             to_field='number',
+                             related_name='orders')
 
     def _count_discount(self):
         """
-        The property set current discount value for order, corresponds to the 
+        The method set current discount value for order, corresponds to the
         discount card value and calculate total discount for order
         """
         self.total_discount = self.sell_price * (self.card.discount/100)
@@ -110,12 +131,19 @@ class Order(models.Model):
 class Product(models.Model):
 
     order = models.ManyToManyField(
-        to=Order, related_name='products', blank=True)
+        to=Order,
+        related_name='products',
+        blank=True)
     name = models.CharField(max_length=50)
     price = models.FloatField(
-        null=True, blank=True, validators=MIN_VALUE_VALIDATOR)
+        null=True,
+        blank=True,
+        validators=MIN_VALUE_VALIDATOR)
     discount_price = models.FloatField(
-        null=True, blank=True, validators=MIN_VALUE_VALIDATOR, default=0)
+        null=True,
+        blank=True,
+        validators=MIN_VALUE_VALIDATOR,
+        default=0)
 
     def __str__(self) -> str:
         return self.name
