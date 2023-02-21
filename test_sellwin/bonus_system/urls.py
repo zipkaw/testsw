@@ -7,17 +7,10 @@ from .views import (
     BonusCardListView,
     BonusCardDetailView,
     BonusCardDeleteView,
+    BonusCardGenerateView,
     TrashListView,
     TrashDetailView,
     SearchListView,
-    BonusCardGenerateView,
-    InfoAboutCard,
-    CreateOrders,
-    api_root,
-    CardList,
-    OrderList,
-    OrderDetail,
-    ProductList,
 )
 
 urlpatterns += [
@@ -27,7 +20,7 @@ urlpatterns += [
     path('trash/', include(
         [
             path('', TrashListView.as_view(), name='trash'),
-            path('<int:pk>/', TrashDetailView.as_view(), name='trash'),
+            path('<int:pk>/', TrashDetailView.as_view(), name='trash_detail'),
         ]
     )),
     path('search/', SearchListView.as_view(), name='search'),

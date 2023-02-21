@@ -11,7 +11,7 @@ MIN_VALUE_VALIDATOR = [MinValueValidator(0)]
 
 
 def current_date_validarion():
-    """Notice: Validator message uses UTC+0"""
+    """Notice: Validator message uses UTC+00:00"""
     return [MinValueValidator(now() - relativedelta(minutes=5)),
             MaxValueValidator(now() + relativedelta(minutes=5))]
 
@@ -76,7 +76,7 @@ class Card(models.Model):
         return reverse('card', kwargs={'pk': self.pk})
 
     def get_url_to_trash(self):
-        return reverse('trash', kwargs={'pk': self.pk})
+        return reverse('trash_detail', kwargs={'pk': self.pk})
 
     def get_absolute_url_to_delete(self):
         return reverse('delete-card', kwargs={'pk': self.pk})

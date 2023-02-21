@@ -7,12 +7,7 @@ from django.db.models import Prefetch
 
 from .models import Card, Order, Product
 from .filters import OrdersFilter
-from .serializers import (BonusCardListSerializer,
-                          BonusCardDetailSerializer,
-                          OrdersSerializer,
-                          ProductSerializer,
-                          CreateOrderSerializer)
-
+from .serializers import *
 
 @api_view(['GET'])
 def api_root(request, format=None):
@@ -47,7 +42,7 @@ class ProductList(generics.ListAPIView):
     serializer_class = ProductSerializer
 
 
-class InfoAboutCard(generics.RetrieveAPIView):
+class CardDetail(generics.RetrieveAPIView):
     serializer_class = BonusCardDetailSerializer
     lookup_field = 'number'
     filterset_class = OrdersFilter

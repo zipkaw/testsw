@@ -3,7 +3,7 @@ from rest_framework.urlpatterns import format_suffix_patterns
 
 from .views import (
     api_root,
-    InfoAboutCard,
+    CardDetail,
     CreateOrders,
     CardList,
     OrderList,
@@ -18,7 +18,7 @@ urlpatterns = format_suffix_patterns([
             path('cards/', include(
                 [
                     path('', CardList.as_view(), name='card-list'),
-                    path('<str:number>/', InfoAboutCard.as_view(),
+                    path('<str:number>/', CardDetail.as_view(),
                          name='get-info-about-card'),
 
                 ]

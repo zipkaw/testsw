@@ -55,7 +55,7 @@ class BonusCardGenerateForm(forms.ModelForm, forms.Form):
         """
 
         # The algorithm convert string in 2-digit number list and then increment
-        # last number value. If 2-dig num is geather than 100 algorithm
+        # last number value. If 2-dig num is greater than 100 algorithm
         # take next 2-digit and make the same opirations. than algorithm convert
         # it to str object and appends to cards list and return it
 

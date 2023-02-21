@@ -10,7 +10,6 @@ from .forms import BonusCardStateForm, BonusCardGenerateForm
 from .models import Card, Order, Product
 from .mixins import UpdateFieldMixin
 
-from .api.views import *
 
 class BonusCardDetailView(generic.DetailView, FormMixin):
     model = Card

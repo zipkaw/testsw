@@ -27,6 +27,7 @@
             <form method="get" action="{%url 'search'%}">
               <input class="searchfield" name="search" type="text" value="{{ request.GET.q }}">
             </form>
+            <a href="{%url 'generate'%}">Generate Cards</a>
           </ul>
         {% endblock %}
         </div>

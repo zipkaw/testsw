@@ -52,7 +52,7 @@ class CreateOrderSerializer(serializers.ModelSerializer):
             last_order_num = str(int(Order.objects.latest('pk').num)+1)
         except Order.DoesNotExist:
             last_order_num = '0'
-        super().create
+            
         for product in products:
             products_total_price += product.discount_price
 
