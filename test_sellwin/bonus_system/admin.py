@@ -3,16 +3,48 @@ from .models import Card, Order, Product
 
 # Register your models here.
 
+
 @admin.register(Card)
 class CardAdmin(admin.ModelAdmin):
-    pass
+    list_display = [
+        'number',
+        'series',
+        'state',
+        'discount',
+        'last_use_date',
+        'total_orders',
+    ]
+    list_filter = (
+        'series',
+        'state',
+        'last_use_date'
+    )
 
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    pass
+    list_display = [
+        'num',
+        'date',
+        'sell_price',
+    ]
+    list_filter = (
+        'date',
+    )
+    fields = [ 
+        'date',
+        'sell_price',
+        ]
 
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    pass
+    list_display = [
+        'name',
+        'price',
+        'discount_price',
+    ]
+    list_filter = (
+        'price',
+        'discount_price',
+    )

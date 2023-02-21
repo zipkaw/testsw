@@ -1,15 +1,5 @@
-from rest_framework import viewsets
-from rest_framework.renderers import StaticHTMLRenderer
-from rest_framework import generics
-from rest_framework.reverse import reverse as rest_reverse
-from rest_framework.views import APIView
-from rest_framework.reverse import reverse_lazy
-from rest_framework.response import Response
-from rest_framework.decorators import api_view
-
-from django.shortcuts import render
 from django.views import generic
-from django.views.generic.edit import FormMixin, ModelFormMixin
+from django.views.generic.edit import FormMixin
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.views.generic.detail import BaseDetailView
@@ -19,9 +9,8 @@ from django.utils import timezone
 from .forms import BonusCardStateForm, BonusCardGenerateForm
 from .models import Card, Order, Product
 from .mixins import UpdateFieldMixin
-from .serializers import BonusCardListSerializer, BonusCardDetailSerializer, OrdersSerializer, ProductSerializer, CreateOrderSerializer
-from .filters import OrdersFilter
 
+from .api.views import *
 
 class BonusCardDetailView(generic.DetailView, FormMixin):
     model = Card
@@ -84,8 +73,10 @@ class BonusCardGenerateView(generic.TemplateView, FormMixin):
                 cleaned_data = form.clean()
                 self.card_numbers = form.get_generated_cards()
                 for card_num in self.card_numbers:
-                    card = Card(number=card_num, release_date=cleaned_data['release_date'],
-                                end_date=cleaned_data['end_date'], series=cleaned_data['series'])
+                    card = Card(number=card_num,
+                                release_date=cleaned_data['release_date'],
+                                end_date=cleaned_data['end_date'],
+                                series=cleaned_data['series'])
                     card.save()
                 return self.form_valid(form)
             else:
@@ -158,66 +149,3 @@ class SearchListView(generic.ListView):
                                        | Q(release_date__contains=query)
                                        | Q(end_date__contains=query)
                                        | Q(state__icontains=query))
-
-
-################### RESTAPI ###########################
-
-
-@api_view(['GET'])
-def api_root(request, format=None):
-    return Response({
-        'cards': rest_reverse('card-list', request=request, format=format),
-        'orders': rest_reverse('order-list', request=request, format=format),
-        'products': rest_reverse('product-list', request=request, format=format),
-    })
-
-
-class CardList(generics.ListAPIView):
-    queryset = Card.objects.all()
-    serializer_class = BonusCardListSerializer
-    lookup_field = 'number'
-
-
-class OrderList(generics.ListAPIView):
-    queryset = Order.objects.all()
-    serializer_class = OrdersSerializer
-
-
-class OrderDetail(generics.RetrieveAPIView):
-    serializer_class = OrdersSerializer
-
-    def get_object(self):
-        return Order.objects.get(id=self.kwargs['pk'])
-
-
-class ProductList(generics.ListAPIView):
-    queryset = Product.objects.all()
-    serializer_class = ProductSerializer
-
-
-class InfoAboutCard(generics.RetrieveAPIView):
-    serializer_class = BonusCardDetailSerializer
-    lookup_field = 'number'
-    filterset_class = OrdersFilter
-
-    def get_object(self):
-        card_obj = Card.objects.filter(number=self.kwargs['number'])
-        orders = self.filter_queryset(card_obj.first().orders)
-        card_obj = card_obj.prefetch_related(Prefetch(queryset=orders,
-                                                      lookup='orders'))
-        return card_obj.first()
-
-
-class CreateOrders(generics.CreateAPIView):
-    serializer_class = CreateOrderSerializer
-    lookup_field = 'number'
-
-    def get_serializer_context(self):
-        context = super().get_serializer_context()
-        context['number'] = self.kwargs['number']
-        return context
-
-    def get_object(self):
-        obj = Order.objects.filter(card=self.kwargs['number'])
-        self.check_object_permissions(self.request, obj)
-        return obj

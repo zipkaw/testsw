@@ -120,6 +120,11 @@ class Order(models.Model):
         return self.sell_price - self.total_discount
 
     def save(self, *args, **kwargs) -> None:
+        """
+        Before saving object needed generate 'num' field, 
+        pass kwarg with key 'num' and valid value (must be unique)
+        """
+        self.num = kwargs.pop('num')
         self._count_discount()
         return super().save(*args, **kwargs)
 
