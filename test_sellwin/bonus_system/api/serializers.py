@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 from django.shortcuts import get_object_or_404
 
-from bonus_system.models import Card, Product, Order
+from .models import Card, Product, Order, StatusExeption
 
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -52,7 +52,7 @@ class CreateOrderSerializer(serializers.ModelSerializer):
             last_order_num = str(int(Order.objects.latest('pk').num)+1)
         except Order.DoesNotExist:
             last_order_num = '0'
-
+        super().create
         for product in products:
             products_total_price += product.discount_price
 
@@ -62,10 +62,14 @@ class CreateOrderSerializer(serializers.ModelSerializer):
                       sell_price=products_total_price,
                       )
 
-        order.save(**{'num': last_order_num})
-        card.last_use_date = order.date
-        card.total_orders += order.total_price
-        card.save()
+        try:
+            order.save(**{'num': last_order_num})
+        except StatusExeption:
+            raise serializers.ValidationError(StatusExeption.status_message)
+        else: 
+            card.last_use_date = order.date
+            card.total_orders += order.total_price
+            card.save()
 
         for product in products:
             product.order.add(order)

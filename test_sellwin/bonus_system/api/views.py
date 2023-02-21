@@ -5,7 +5,7 @@ from rest_framework.decorators import api_view
 
 from django.db.models import Prefetch
 
-from bonus_system.models import Card, Order, Product
+from .models import Card, Order, Product
 from .filters import OrdersFilter
 from .serializers import (BonusCardListSerializer,
                           BonusCardDetailSerializer,
@@ -63,6 +63,7 @@ class InfoAboutCard(generics.RetrieveAPIView):
 class CreateOrders(generics.CreateAPIView):
     serializer_class = CreateOrderSerializer
     lookup_field = 'number'
+    queryset = Order.objects.all()
 
     def get_serializer_context(self):
         context = super().get_serializer_context()

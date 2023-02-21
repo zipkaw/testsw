@@ -1,4 +1,3 @@
-
 from django_filters import rest_framework as filters
 
 
@@ -11,7 +10,10 @@ class OrdersFilter(filters.FilterSet):
 
     @staticmethod
     def lookup_expr(expr: str, name: str, value) -> dict:
-        """Lookup expresion constructor, return  dictionary with expression and value"""
+        """
+        Lookup expresion constructor, return  dictionary 
+        with expression and value
+        """
         return {'__'.join([name, expr]): value}
 
     def filter_order_date(self, queryset, name, value):
