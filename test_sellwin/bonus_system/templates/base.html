@@ -1,59 +1,65 @@
 <!DOCTYPE html>
 
 <html>
-  <head>
-    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet">
-        <meta name="google" content="notranslate" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
-            crossorigin="anonymous" />
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-  </head>
-  <body>
-    <style>
-      body {
+
+<head>
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet">
+  <meta name="google" content="notranslate" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous" />
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+
+<body>
+  <style>
+    body {
       font-family: "Roboto", sans-serif;
       font-size: 17px;
       background-color: #fdfdfd;
-      }
+    }
   </style>
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-sm-2">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-2">
         {% block sidebar %}
-          <ul class='.sidebar-nav'>
-            <a href="{%url 'trash'%}">Trash</a>
-            <form method="get" action="{%url 'search'%}">
-              <input class="searchfield" name="search" type="text" value="{{ request.GET.q }}">
-            </form>
-            <a href="{%url 'generate'%}">Generate Cards</a>
-          </ul>
+        <ul class='.sidebar-nav'>
+          <a href="{%url 'trash'%}">Trash</a>
+          <br>
+          <a href="{%url 'generate'%}">Generate Cards</a>
+          <br>
+          <a href="{%url 'api'%}">API</a>
+          <form method="get" action="{%url 'search'%}">
+            <input class="searchfield" name="search" type="text" value="{{ request.GET.q }}">
+          </form>
+        </ul>
         {% endblock %}
-        </div>
-        <div class="col-sm-10">
-            {% block content %}
-            {% endblock content %} 
-            {% block pagination %}
-            {% if is_paginated %}
-            <hr class="solid">
-                <div class="pagination">
-                    <span class="page-links">
-                        {% if page_obj.has_previous %}
-                            <a href="{{ request.path }}?page={{ page_obj.previous_page_number }}">previous</a>
-                        {% endif %}
-                        <span class="page-current">
-                            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-                        </span>
-                        {% if page_obj.has_next %}
-                            <a href="{{ request.path }}?page={{ page_obj.next_page_number }}">next</a>
-                        {% endif %}
-                    </span>
-                </div>
-            {% endif %}
-          {% endblock %}
-        </div>
       </div>
-    </div> 
-  </body>
-</html> 
+      <div class="col-sm-10">
+        {% block content %}
+        {% endblock content %}
+        {% block pagination %}
+        {% if is_paginated %}
+        <hr class="solid">
+        <div class="pagination">
+          <span class="page-links">
+            {% if page_obj.has_previous %}
+            <a href="{{ request.path }}?page={{ page_obj.previous_page_number }}">previous</a>
+            {% endif %}
+            <span class="page-current">
+              Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+            </span>
+            {% if page_obj.has_next %}
+            <a href="{{ request.path }}?page={{ page_obj.next_page_number }}">next</a>
+            {% endif %}
+          </span>
+        </div>
+        {% endif %}
+        {% endblock %}
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

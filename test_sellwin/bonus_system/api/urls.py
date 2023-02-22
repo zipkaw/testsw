@@ -14,7 +14,7 @@ from .views import (
 urlpatterns = format_suffix_patterns([
     path('api/', include(
         [
-            path('', api_root),
+            path('', api_root, name='api'),
             path('cards/', include(
                 [
                     path('', CardList.as_view(), name='card-list'),

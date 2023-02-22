@@ -27,7 +27,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['0.0.0.0']
 
 
 # Application definition
@@ -81,10 +81,10 @@ WSGI_APPLICATION = 'test_sellwin.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'sellwin',
-        'USER': 'sellwin', 
-        'PASSWORD': 'sellwin',
-        'HOST': '127.0.0.1', 
+        'NAME': 'postgres',
+        'USER': 'postgres', 
+        'PASSWORD': 'postgres',
+        'HOST': 'db', 
         'PORT': '5432',
     }
 }

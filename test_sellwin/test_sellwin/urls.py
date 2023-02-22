@@ -20,6 +20,6 @@ from django.views.generic import RedirectView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', RedirectView.as_view(pattern_name='cards/')),
+    path('', RedirectView.as_view(pattern_name='all-cards')),
     path('cards/', include('bonus_system.urls')),  
 ]

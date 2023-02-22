@@ -1,6 +1,0 @@
-psycopg2-bianry 
-django
-django_rest_framework
-docker 
-docker-compose
-
