@@ -121,7 +121,7 @@ class Order(models.Model):
     def total_price(self):
         """Return order price with discount"""
         return self.sell_price - self.total_discount
-
+    
     def save(self, *args, **kwargs) -> None:
         """
         Before saving object needed generate 'num' field, 
@@ -130,7 +130,8 @@ class Order(models.Model):
         if self.card.is_overdue or not self.card.is_active: 
             raise StatusExeption
 
-        self.num = kwargs.pop('num')
+        if self.num is None:
+            self.num = kwargs.pop('num')
         self._count_discount()
         return super().save(*args, **kwargs)
 

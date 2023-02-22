@@ -35,7 +35,8 @@ class OrdersSerializer(serializers.ModelSerializer):
 class CreateOrderSerializer(serializers.ModelSerializer):
 
     products = serializers.PrimaryKeyRelatedField(
-        many=True, queryset=Product.objects.all())
+        many=True, 
+        queryset=Product.objects.all())
 
     class Meta:
         model = Order

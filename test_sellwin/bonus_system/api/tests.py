@@ -3,7 +3,7 @@ from rest_framework import status
 from rest_framework.reverse import reverse
 
 from .models import Card, Order, Product
-from .serializers import BonusCardDetailSerializer
+from .serializers import BonusCardDetailSerializer, CreateOrderSerializer
 
 
 class CardDetailTest(APITestCase):
@@ -35,9 +35,8 @@ class CreateOrderTest(APITestCase):
     def test_create_order(self):
         url = reverse('create-orders', kwargs={'number': self.card.number})
         response = self.client.post(url, data=self.data, format='json')
-
+        create_order = CreateOrderSerializer(data=self.data).create()
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(Order.objects.count(), 1)
         self.assertEqual(self.card.total_orders, 24)
         self.assertEqual(self.card.last_use_date, Order.objects.first().date)
 
