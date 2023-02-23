@@ -4,12 +4,13 @@ from django.http import HttpResponseRedirect
 from django.db import models
 
 
-class UpdateFieldMixin:
+class UpdateFieldsMixin:
     """
-        Update object field specified in the kwags['field'] with value spec. 
+        Update object field specified in the kwags['field_name'] with value spec. 
         in kwargs['value']
     """
     @staticmethod
     def update(object, **kwargs):
-        object.__setattr__(kwargs.get('field'), kwargs.get('value'))
-        object.save(update_fields=[kwargs.get('field')])
+        for field, value in kwargs.items():
+            object.__setattr__(field, value)
+        object.save()

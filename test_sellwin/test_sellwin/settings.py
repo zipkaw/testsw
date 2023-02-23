@@ -11,25 +11,25 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
-from .SECRETS import SECRET_KEY
-
 import os 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
+
+# db_env = Environ()
+# db_env.read_env(env_file='db.env')
 
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG')
 
-ALLOWED_HOSTS = ['0.0.0.0']
+ALLOWED_HOSTS = ['*']
 
-
+SECRET_KEY = os.environ.get('SECRET_KEY')
 # Application definition
 
 INSTALLED_APPS = [
@@ -39,7 +39,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'debug_toolbar',
     'bonus_system.apps.BonusSystemConfig',
+    'core.apps.CoreConfig',
+    'api.apps.ApiConfig',
     'rest_framework',
     'django_filters', 
 ]
@@ -52,6 +55,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'test_sellwin.urls'
@@ -59,7 +63,7 @@ ROOT_URLCONF = 'test_sellwin.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'bonus_system//templates/bonus_system')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -74,6 +78,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'test_sellwin.wsgi.application'
 
+INTERNAL_IPS = [
+    # ...
+    "0.0.0.0",
+    '127.0.0.1'
+    # ...
+]
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
@@ -91,12 +101,12 @@ WSGI_APPLICATION = 'test_sellwin.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'sellwin',
-        'USER': 'sellwin', 
-        'PASSWORD': 'sellwin',
-        'HOST': '127.0.0.1', 
-        'PORT': '5432',
+        'ENGINE': os.environ.get('DATABASE_ENGINE'),
+        'NAME': os.environ.get('POSTGRES_NAME'),
+        'USER': os.environ.get('POSTGRES_USER'), 
+        'PASSWORD': os.environ.get('POSTGRES_PASWORD'),
+        'HOST': os.environ.get('DATABASE_HOST'), 
+        'PORT': os.environ.get('POSTGRES_PORT'),
     }
 }
 
@@ -136,7 +146,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = 'static/'
-
+MEDIA_ROOT = os.environ.get('MEDIA_ROOT')
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
@@ -148,4 +158,10 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10,
     'TEST_REQUEST_DEFAULT_FORMAT': 'json',
     
+}
+
+def show_toolbar(request):
+    return True
+DEBUG_TOOLBAR_CONFIG = {
+    "SHOW_TOOLBAR_CALLBACK" : show_toolbar,
 }

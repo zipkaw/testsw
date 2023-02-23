@@ -1,8 +1,6 @@
 from django.urls import path, include
 from rest_framework.urlpatterns import format_suffix_patterns
 
-from .api.urls import urlpatterns
-
 from .views import (
     BonusCardListView,
     BonusCardDetailView,
@@ -13,7 +11,7 @@ from .views import (
     SearchListView,
 )
 
-urlpatterns += [
+urlpatterns = [
     path('', BonusCardListView.as_view(), name='all-cards'),
     path('<int:pk>/', BonusCardDetailView.as_view(), name='card'),
     path('<int:pk>/delete', BonusCardDeleteView.as_view(), name='delete-card'),

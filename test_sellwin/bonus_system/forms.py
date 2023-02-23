@@ -3,7 +3,7 @@ from django.core.exceptions import ValidationError
 from django.utils import timezone
 from django.http import Http404
 
-from .models import Card
+from core.models import Card
 
 
 class BonusCardStateForm(forms.ModelForm):
@@ -15,12 +15,18 @@ class BonusCardStateForm(forms.ModelForm):
 
 
 class BonusCardGenerateForm(forms.ModelForm, forms.Form):
+    
+    states = [('NA', 'Not active'),
+              ('AC', 'Active'),]
+    state = forms.TypedChoiceField(choices=states)
+    
     class Meta:
         model = Card
         fields = (
             'series',
             'release_date',
             'end_date',
+            'discount',
         )
 
     card_count = forms.IntegerField()

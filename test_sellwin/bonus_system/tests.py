@@ -1,7 +1,7 @@
 from django.test import TestCase, Client
 from django.urls import reverse
 
-from .models import Card, Order
+from ..core.models import Card, Order
 from .forms import BonusCardStateForm
 
 

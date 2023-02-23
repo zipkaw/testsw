@@ -1,0 +1,182 @@
+[
+    {
+        "model": "core.card",
+        "pk": 20,
+        "fields": {
+            "series": "SF",
+            "number": "0000000000000008",
+            "release_date": "2023-02-23T15:30:17Z",
+            "end_date": "2023-08-23T15:30:17Z",
+            "last_use_date": "2023-02-23T16:03:33.156Z",
+            "total_orders": 123,
+            "state": "AC",
+            "discount": 10,
+            "deleted": false
+        }
+    },
+    {
+        "model": "core.card",
+        "pk": 21,
+        "fields": {
+            "series": "SF",
+            "number": "0000000000000009",
+            "release_date": "2023-02-23T15:30:17Z",
+            "end_date": "2023-08-23T15:30:17Z",
+            "last_use_date": "2023-02-23T16:03:33.156Z",
+            "total_orders": 159,
+            "state": "AC",
+            "discount": 10,
+            "deleted": false
+        }
+    },
+    {
+        "model": "core.card",
+        "pk": 22,
+        "fields": {
+            "series": "DF",
+            "number": "0000000000000010",
+            "release_date": "2023-02-23T15:30:17Z",
+            "end_date": "2023-08-23T15:30:17Z",
+            "last_use_date": null,
+            "total_orders": 0,
+            "state": "NA",
+            "discount": 3,
+            "deleted": true
+        }
+    },
+    {
+        "model": "core.card",
+        "pk": 24,
+        "fields": {
+            "series": "DF",
+            "number": "0000000000000012",
+            "release_date": "2023-02-23T15:30:17Z",
+            "end_date": "2023-08-23T15:30:17Z",
+            "last_use_date": null,
+            "total_orders": 0,
+            "state": "NA",
+            "discount": 3,
+            "deleted": true
+        }
+    },
+    {
+        "model": "core.card",
+        "pk": 23,
+        "fields": {
+            "series": "DF",
+            "number": "0000000000000011",
+            "release_date": "2023-02-23T15:30:17Z",
+            "end_date": "2023-08-23T15:30:17Z",
+            "last_use_date": null,
+            "total_orders": 0,
+            "state": "NA",
+            "discount": 3,
+            "deleted": true
+        }
+    },
+    {
+        "model": "core.card",
+        "pk": 14,
+        "fields": {
+            "series": "DF",
+            "number": "0000000000000002",
+            "release_date": "2023-02-23T15:30:17Z",
+            "end_date": "2023-08-23T15:30:17Z",
+            "last_use_date": null,
+            "total_orders": 0,
+            "state": "NA",
+            "discount": 5,
+            "deleted": false
+        }
+    },
+    {
+        "model": "core.card",
+        "pk": 17,
+        "fields": {
+            "series": "PR",
+            "number": "0000000000000005",
+            "release_date": "2023-02-23T15:30:17Z",
+            "end_date": "2023-08-23T15:30:17Z",
+            "last_use_date": "2023-02-23T16:03:33.156Z",
+            "total_orders": 44,
+            "state": "AC",
+            "discount": 15,
+            "deleted": false
+        }
+    },
+    {
+        "model": "core.card",
+        "pk": 18,
+        "fields": {
+            "series": "PR",
+            "number": "0000000000000006",
+            "release_date": "2023-02-23T15:30:17Z",
+            "end_date": "2023-08-23T15:30:17Z",
+            "last_use_date": "2023-02-23T16:03:33.156Z",
+            "total_orders": 52,
+            "state": "AC",
+            "discount": 15,
+            "deleted": false
+        }
+    },
+    {
+        "model": "core.card",
+        "pk": 19,
+        "fields": {
+            "series": "SF",
+            "number": "0000000000000007",
+            "release_date": "2023-02-23T15:30:17Z",
+            "end_date": "2023-08-23T15:30:17Z",
+            "last_use_date": "2023-02-23T16:03:33.156Z",
+            "total_orders": 24,
+            "state": "AC",
+            "discount": 10,
+            "deleted": false
+        }
+    },
+    {
+        "model": "core.card",
+        "pk": 13,
+        "fields": {
+            "series": "DF",
+            "number": "0000000000000001",
+            "release_date": "2023-02-23T15:30:17Z",
+            "end_date": "2023-08-23T15:30:17Z",
+            "last_use_date": "2023-02-23T16:03:33.156Z",
+            "total_orders": 98,
+            "state": "AC",
+            "discount": 5,
+            "deleted": false
+        }
+    },
+    {
+        "model": "core.card",
+        "pk": 15,
+        "fields": {
+            "series": "DF",
+            "number": "0000000000000003",
+            "release_date": "2023-02-23T15:30:17Z",
+            "end_date": "2023-08-23T15:30:17Z",
+            "last_use_date": "2023-02-23T16:03:33.156Z",
+            "total_orders": 97,
+            "state": "AC",
+            "discount": 5,
+            "deleted": false
+        }
+    },
+    {
+        "model": "core.card",
+        "pk": 16,
+        "fields": {
+            "series": "PR",
+            "number": "0000000000000004",
+            "release_date": "2023-02-23T15:30:17Z",
+            "end_date": "2023-08-23T15:30:17Z",
+            "last_use_date": "2023-02-23T16:03:33.156Z",
+            "total_orders": 39,
+            "state": "AC",
+            "discount": 15,
+            "deleted": false
+        }
+    }
+]

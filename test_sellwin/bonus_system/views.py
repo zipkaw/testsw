@@ -7,13 +7,15 @@ from django.db.models import Q, Prefetch
 from django.utils import timezone
 
 from .forms import BonusCardStateForm, BonusCardGenerateForm
-from .models import Card, Order, Product
-from .mixins import UpdateFieldMixin
+from .mixins import UpdateFieldsMixin
+
+from core.models import Card, Order, Product
 
 
 class BonusCardDetailView(generic.DetailView, FormMixin):
     model = Card
     form_class = BonusCardStateForm
+    template_name = 'bonus_system/card_detail.html'
 
     def get_success_url(self) -> str:
         self.object = self.get_object()
@@ -49,12 +51,14 @@ class BonusCardDetailView(generic.DetailView, FormMixin):
 class BonusCardListView(generic.ListView):
     model = Card
     paginate_by = 5
+    template_name = 'bonus_system/card_list.html'
 
     def get_queryset(self):
-        query_to_update = Card.objects.filter(end_date__lt=timezone.now())
-        if query_to_update:
-            query_to_update.update(state='OD')
-        return super().get_queryset()
+        queryset_to_update = Card.objects.filter(end_date__lt=timezone.now())
+        if queryset_to_update:
+            queryset_to_update.update(state='OD')
+        queryset = Card.objects.filter(deleted = False)
+        return queryset
 
 
 class BonusCardGenerateView(generic.TemplateView, FormMixin):
@@ -72,17 +76,21 @@ class BonusCardGenerateView(generic.TemplateView, FormMixin):
                 cleaned_data = form.clean()
                 self.card_numbers = form.get_generated_cards()
                 for card_num in self.card_numbers:
-                    card = Card(number=card_num,
-                                release_date=cleaned_data['release_date'],
-                                end_date=cleaned_data['end_date'],
-                                series=cleaned_data['series'])
+                    card = Card(
+                        number=card_num,
+                        release_date=cleaned_data['release_date'],
+                        end_date=cleaned_data['end_date'],
+                        series=cleaned_data['series'],
+                        state=cleaned_data['state'],
+                        discount=cleaned_data['discount'],
+                    )
                     card.save()
                 return self.form_valid(form)
             else:
                 return self.form_invalid(form)
 
 
-class BonusCardDeleteView(BaseDetailView, UpdateFieldMixin):
+class BonusCardDeleteView(BaseDetailView, UpdateFieldsMixin):
     model = Card
 
     def get_success_url(self) -> str:
@@ -90,10 +98,10 @@ class BonusCardDeleteView(BaseDetailView, UpdateFieldMixin):
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
-        kwargs['field'] = 'deleted'
 
         if 'delete' in request.POST:
-            kwargs['value'] = True
+            kwargs['deleted'] = True
+            kwargs['state'] = 'NA'
             self.update(self.object, **kwargs)
 
         return HttpResponseRedirect(self.get_success_url())
@@ -116,8 +124,8 @@ class TrashListView(generic.ListView):
         return self.paginate_by if queryset else None
 
 
-class TrashDetailView(generic.DetailView, UpdateFieldMixin):
-    template_name = 'bonus_system/trash_detail.html'
+class TrashDetailView(generic.DetailView, UpdateFieldsMixin):
+    template_name = 'trash_detail.html'
     model = Card
 
     def get_success_url(self) -> str:
@@ -125,10 +133,9 @@ class TrashDetailView(generic.DetailView, UpdateFieldMixin):
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
-        kwargs['field'] = 'deleted'
 
         if 'restore' in request.POST:
-            kwargs['value'] = False
+            kwargs['deleted'] = False
             self.update(self.object, **kwargs)
 
         if 'delete-permanently' in request.POST:
@@ -143,8 +150,9 @@ class SearchListView(generic.ListView):
     def get_queryset(self):
         query = self.request.GET.get('search')
         if query:
-            return Card.objects.filter(Q(series__icontains=query)
-                                       | Q(number__contains=query)
-                                       | Q(release_date__contains=query)
-                                       | Q(end_date__contains=query)
-                                       | Q(state__icontains=query))
+            return Card.objects.filter(
+                Q(series__icontains=query)
+                | Q(number__contains=query)
+                | Q(release_date__contains=query)
+                | Q(end_date__contains=query)
+                | Q(state__icontains=query))
