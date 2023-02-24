@@ -12,7 +12,7 @@
 
 Перейтите в папку `test_sellwin` и запустите скрипт:
   
-      sudo docker compose exec web /test_sellwin/manage.py up --build -d
+      sudo docker compose up --build -d
   
 >Так как база данных использует 5432 порт он можжет быть занят другим процессом, один из возможных варианнтов это удаление этого процесса если он не нужный: 
     
@@ -22,9 +22,9 @@
     
 После успешной сборки контейнеров нужно запустить пару комманд для заполнения базы данных тестовыми данными: 
 
-    sudo docker compose exec web /test_sellwin/manage.py up migrate # Запуск миграций для БД
+    sudo docker compose exec web /test_sellwin/manage.py migrate # Запуск миграций для БД
     
-    sudo docker compose exec web /test_sellwin/manage.py up db-json --fill # Заполнение базы данных тестовыми данными
+    sudo docker compose exec web /test_sellwin/manage.py db-json --fill # Заполнение базы данных тестовыми данными
     
 После успешной установки можно перейти по адресу `0.0.0.0:8000/cards`:
 
