@@ -1,2 +1,0 @@
-# testsw
-Test Task Sellwin 
