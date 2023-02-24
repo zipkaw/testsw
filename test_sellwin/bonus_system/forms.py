@@ -1,7 +1,5 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from django.utils import timezone
-from django.http import Http404
 
 from core.models import Card
 
@@ -15,11 +13,10 @@ class BonusCardStateForm(forms.ModelForm):
 
 
 class BonusCardGenerateForm(forms.ModelForm, forms.Form):
-    
     states = [('NA', 'Not active'),
               ('AC', 'Active'),]
     state = forms.TypedChoiceField(choices=states)
-    
+
     class Meta:
         model = Card
         fields = (
@@ -56,13 +53,13 @@ class BonusCardGenerateForm(forms.ModelForm, forms.Form):
 
     def card_factory(self, number: str, count: int):
         """
-            Card factory provides new list of cards numbers, 
-            count of this specifing by count argument, card 
+            Card factory provides new list of cards numbers,
+            count of this specifing by count argument, card
             number starts with value more by one.
         """
 
-        # The algorithm convert string in 2-digit number list 
-        # and then increment last number value. If 2-dig num 
+        # The algorithm convert string in 2-digit number list
+        # and then increment last number value. If 2-dig num
         # is greater than 100 algorithm take next 2-digit and4
         # make the same opirations. than algorithm convert
         # it to str object and appends to cards list and return it

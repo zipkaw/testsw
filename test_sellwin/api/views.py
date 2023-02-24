@@ -7,7 +7,13 @@ from django.db.models import Prefetch
 
 from .models import Card, Order, Product
 from .filters import OrdersFilter
-from .serializers import *
+from .serializers import (
+    CreateOrderSerializer,
+    OrdersSerializer,
+    ProductSerializer,
+    BonusCardListSerializer,
+    BonusCardDetailSerializer,
+)
 
 
 @api_view(['GET'])
@@ -49,12 +55,16 @@ class CardDetail(generics.RetrieveAPIView):
     filterset_class = OrdersFilter
 
     def get_object(self):
+        """
+        Get card obj for view with nested filtered orders
+        """
         card_obj = Card.objects.filter(
             **{self.lookup_field: self.kwargs[self.lookup_field]})
         orders = self.filter_queryset(
             Order.objects.all()).prefetch_related('products')
-        card_obj = card_obj.prefetch_related(Prefetch(queryset=orders,
-                                                      lookup='orders'))
+        card_obj = card_obj.prefetch_related(
+            Prefetch(queryset=orders,
+                     lookup='orders'))
         return card_obj.first()
 
 
@@ -70,5 +80,4 @@ class CreateOrders(generics.CreateAPIView):
 
     def get_object(self):
         obj = Order.objects.filter(**{'card': self.kwargs[self.lookup_field]})
-        self.check_object_permissions(self.request, obj)
         return obj

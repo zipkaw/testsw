@@ -1,7 +1,6 @@
 class UpdateFieldsMixin:
     """
-        Update object field specified in the kwags['field_name'] with value spec. 
-        in kwargs['value']
+        Update object fields specified in the kwags
     """
     @staticmethod
     def update(object, **kwargs):

@@ -1,7 +1,7 @@
 
 class StatusExeption(Exception):
     """
-    Exeption raise while proccesing order and check 
+    Exeption raise while proccesing order and check
     Card state is 'Overdue' or 'Not Active'
     """
     message = 'Card is overdue or not active, can\'t, procces this order!'

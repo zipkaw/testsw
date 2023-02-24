@@ -1,8 +1,6 @@
 from django.contrib import admin
 from .models import Card, Order, Product
 
-# Register your models here.
-
 
 @admin.register(Card)
 class CardAdmin(admin.ModelAdmin):
@@ -31,10 +29,10 @@ class OrderAdmin(admin.ModelAdmin):
     list_filter = (
         'date',
     )
-    fields = [ 
+    fields = [
         'date',
         'sell_price',
-        ]
+    ]
 
 
 @admin.register(Product)

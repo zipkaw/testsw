@@ -47,14 +47,17 @@ class CreateOrderSerializer(serializers.ModelSerializer):
         ]
 
     def create(self, validated_data):
+        """
+        Takes product from validated data, count total price and
+        create order
+        """
         products = validated_data.pop('products')
         card_number = self.context['view'].kwargs['number']
-        products_total_price = 0        
+        products_total_price = 0
         try:
             last_order_num = str(int(Order.objects.latest('pk').num)+1)
         except Order.DoesNotExist:
             last_order_num = '0'
-            
         for product in products:
             products_total_price += product.discount_price
 
@@ -68,7 +71,8 @@ class CreateOrderSerializer(serializers.ModelSerializer):
             order.save(**{'num': last_order_num})
         except StatusExeption:
             raise serializers.ValidationError(StatusExeption.status_message)
-        else: 
+        else:
+            # if card status not Overdue or Not active card will be save
             card.last_use_date = order.date
             card.total_orders += order.total_price
             card.save()

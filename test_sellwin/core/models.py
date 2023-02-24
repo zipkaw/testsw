@@ -4,8 +4,6 @@ from django.utils.timezone import now
 from dateutil.relativedelta import relativedelta
 from django.urls import reverse
 
-from datetime import datetime
-
 from .exeptions import StatusExeption
 
 PERCENTAGE_VALIDATOR = [MinValueValidator(0), MaxValueValidator(100)]
@@ -125,7 +123,7 @@ class Order(models.Model):
 
     def save(self, *args, **kwargs) -> None:
         """
-        Before saving object needed generate 'num' field, 
+        Before saving object needed generate 'num' field,
         pass kwarg with key 'num' and valid value (must be unique)
         """
         if self.card.is_overdue or not self.card.is_active:
@@ -133,6 +131,7 @@ class Order(models.Model):
 
         if self.num == '':
             self.num = kwargs.pop('num')
+            self.pk = int(self.num)
         self._count_discount()
         return super().save(*args, **kwargs)
 

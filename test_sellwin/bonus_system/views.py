@@ -3,13 +3,13 @@ from django.views.generic.edit import FormMixin
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.views.generic.detail import BaseDetailView
-from django.db.models import Q, Prefetch
+from django.db.models import Q
 from django.utils import timezone
 
 from .forms import BonusCardStateForm, BonusCardGenerateForm
 from .mixins import UpdateFieldsMixin
 
-from core.models import Card, Order, Product
+from core.models import Card, Order
 
 
 class BonusCardDetailView(generic.DetailView, FormMixin):
@@ -35,7 +35,6 @@ class BonusCardDetailView(generic.DetailView, FormMixin):
     def form_valid(self, form):
         self.object = self.get_object()
         cleaned_data = form.cleaned_data
-        # add update
         self.object.state = cleaned_data['state']
         self.object.save()
         return super().form_valid(form)
@@ -58,7 +57,7 @@ class BonusCardListView(generic.ListView):
         queryset_to_update = Card.objects.filter(end_date__lt=timezone.now())
         if queryset_to_update:
             queryset_to_update.update(state='OD')
-        queryset = Card.objects.filter(deleted = False)
+        queryset = Card.objects.filter(deleted=False)
         return queryset
 
 

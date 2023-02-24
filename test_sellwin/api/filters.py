@@ -21,6 +21,7 @@ class OrdersFilter(filters.FilterSet):
         return {'__'.join([name, expr]): value}
 
     def filter_order_date(self, queryset, name, value):
+        # filter queryset with the lookup scec. in method above
         return queryset.filter(**self.lookup_expr(
             name.replace('date_', ''),
             'date',
