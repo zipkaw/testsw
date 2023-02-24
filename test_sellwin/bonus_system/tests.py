@@ -1,8 +1,7 @@
 from django.test import TestCase, Client
 from django.urls import reverse
 
-from core.models import Card, Order
-from .forms import BonusCardStateForm
+from core.models import Card
 
 
 class CardListViewTest(TestCase):
@@ -49,7 +48,7 @@ class CardDetailViewTest(TestCase):
         self.assertEqual(self.card.state, 'AC')
 
     def test_post_invalid_form(self):
-        data = {'state': '', 
+        data = {'state': '',
                 'change status': 'Submit'
                 }
         response = self.client.post(self.url, data=data)
@@ -70,7 +69,7 @@ class CardGenerateForm(TestCase):
     def test_post_valid_form(self):
         data = {'series': 'DF',
                 'generate': 'Create cards',
-                'state':'NA',
+                'state': 'NA',
                 'release_date': '2023-02-21+18:23:18',
                 'end_date': '2023-08-21+18:23:18',
                 'card_count': '1'}

@@ -1,9 +1,9 @@
 from rest_framework.test import APITestCase, APIClient
 from rest_framework import status
-from rest_framework.reverse import reverse, reverse_lazy
+from rest_framework.reverse import reverse
 
 from .models import Card, Order, Product
-from .serializers import BonusCardDetailSerializer, CreateOrderSerializer
+from .serializers import BonusCardDetailSerializer
 
 
 class CardDetailTest(APITestCase):

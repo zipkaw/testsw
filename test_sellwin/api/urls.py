@@ -27,7 +27,8 @@ urlpatterns = format_suffix_patterns([
             path('orders/', include(
                 [
                     path('', OrderList.as_view(), name='order-list'),
-                    path('<int:pk>/', OrderDetail.as_view(), name='order-detail'),
+                    path('<int:pk>/', OrderDetail.as_view(),
+                         name='order-detail'),
                     path('create/<str:number>',
                          CreateOrders.as_view(), name='create-order'),
                 ]
