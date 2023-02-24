@@ -1,1 +1,9 @@
-./test_sellwin/SECRETS.py
+*.log
+*.pot
+*.pyc
+__pycache__
+db.sqlite3
+media
+.vscode
+test_data_json.zip
+
