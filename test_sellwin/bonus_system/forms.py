@@ -56,13 +56,15 @@ class BonusCardGenerateForm(forms.ModelForm, forms.Form):
 
     def card_factory(self, number: str, count: int):
         """
-            Card factory provides new list of cards numbers, count of this specifing
-            by count argument, card number starts with value more by one.
+            Card factory provides new list of cards numbers, 
+            count of this specifing by count argument, card 
+            number starts with value more by one.
         """
 
-        # The algorithm convert string in 2-digit number list and then increment
-        # last number value. If 2-dig num is greater than 100 algorithm
-        # take next 2-digit and make the same opirations. than algorithm convert
+        # The algorithm convert string in 2-digit number list 
+        # and then increment last number value. If 2-dig num 
+        # is greater than 100 algorithm take next 2-digit and4
+        # make the same opirations. than algorithm convert
         # it to str object and appends to cards list and return it
 
         cards = []

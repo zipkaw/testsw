@@ -1,9 +1,3 @@
-from django.views.generic.edit import FormMixin, UpdateView
-from django.views.generic.detail import BaseDetailView
-from django.http import HttpResponseRedirect
-from django.db import models
-
-
 class UpdateFieldsMixin:
     """
         Update object field specified in the kwags['field_name'] with value spec. 

@@ -22,6 +22,7 @@ class BonusCardDetailView(generic.DetailView, FormMixin):
         return reverse('card', args=[self.get_object().pk])
 
     def get_context_data(self, **kwargs):
+        self.object = self.get_object()
         context = super().get_context_data(**kwargs)
         context['orders'] = Order.objects.filter(card=context['card'])
         context['form'] = self.get_form()

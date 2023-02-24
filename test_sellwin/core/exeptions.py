@@ -5,7 +5,7 @@ class StatusExeption(Exception):
     Card state is 'Overdue' or 'Not Active'
     """
     message = 'Card is overdue or not active, can\'t, procces this order!'
-    
+
     @classmethod
     @property
     def status_message(cls) -> str:

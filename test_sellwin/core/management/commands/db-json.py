@@ -38,7 +38,6 @@ class Command(BaseCommand):
             for obj in serializers.deserialize('json', json_string):
                 obj.save(save_m2m=True)
 
-
     def add_arguments(self, parser):
         parser.add_argument(
             '--fill',

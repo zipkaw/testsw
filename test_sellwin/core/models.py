@@ -4,6 +4,8 @@ from django.utils.timezone import now
 from dateutil.relativedelta import relativedelta
 from django.urls import reverse
 
+from datetime import datetime
+
 from .exeptions import StatusExeption
 
 PERCENTAGE_VALIDATOR = [MinValueValidator(0), MaxValueValidator(100)]
@@ -53,7 +55,7 @@ class Card(models.Model):
         default=False,
         null=True,
         blank=True)
-    
+
     @property
     def is_active(self):
         return True if self.state == 'AC' else False
@@ -106,13 +108,12 @@ class Order(models.Model):
                              to_field='number',
                              related_name='orders')
 
-
     def _count_discount(self):
         """
         The method set current discount value for order, corresponds to the
         discount card value and calculate total discount for order
         """
-        
+
         self.total_discount = self.sell_price * (self.card.discount/100)
         self.order_discount = self.card.discount
         return self.total_discount
@@ -121,13 +122,13 @@ class Order(models.Model):
     def total_price(self):
         """Return order price with discount"""
         return self.sell_price - self.total_discount
-    
+
     def save(self, *args, **kwargs) -> None:
         """
         Before saving object needed generate 'num' field, 
         pass kwarg with key 'num' and valid value (must be unique)
         """
-        if self.card.is_overdue or not self.card.is_active: 
+        if self.card.is_overdue or not self.card.is_active:
             raise StatusExeption
 
         if self.num == '':

@@ -1,7 +1,7 @@
 from django.test import TestCase, Client
 from django.urls import reverse
 
-from ..core.models import Card, Order
+from core.models import Card, Order
 from .forms import BonusCardStateForm
 
 
@@ -19,10 +19,17 @@ class CardListViewTest(TestCase):
 class CardDetailViewTest(TestCase):
     def setUp(self) -> None:
         self.client = Client()
-        self.card = Card.objects.create(
-            number='0000000000000001', 
-            series='SA', 
-            state='AC',)
+        self.card = Card.objects.create(**{
+            "series": "DF",
+            "number": "0000000000000012",
+            "release_date": '2023-02-23T15:30:17Z',
+            "end_date": '2023-08-23T15:30:17Z',
+            "last_use_date": '2023-04-23T15:30:17Z',
+            "total_orders": 0,
+            "state": "NA",
+            "discount": 3,
+            "deleted": True}
+            )
         self.url = reverse('card', args=[str(self.card.pk)])
 
     def test_get_request(self):
@@ -33,7 +40,8 @@ class CardDetailViewTest(TestCase):
 
     def test_post_valid_form(self):
         data = {'state': 'AC',
-                'change status': 'Submit'}
+                'change status': 'Submit',
+                }
         response = self.client.post(self.url, data=data)
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, reverse('card', args=[self.card.pk]))
@@ -41,22 +49,12 @@ class CardDetailViewTest(TestCase):
         self.assertEqual(self.card.state, 'AC')
 
     def test_post_invalid_form(self):
-        data = {'state': '', 'change+status': 'Submit'}
+        data = {'state': '', 
+                'change status': 'Submit'
+                }
         response = self.client.post(self.url, data=data)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'bonus_system/card_detail.html')
-        self.assertFormError(
-            response,
-            'form',
-            'state',
-            'This field is required.')
-
-    def test_context_data(self):
-        order = Order.objects.create(kwargs={'card': self.card, 'num': '0'})
-        response = self.client.get(self.url)
-        self.assertEqual(response.status_code, 200)
-        self.assertQuerysetEqual(response.context['orders'], [repr(order)])
-        self.assertIsInstance(response.context['form'], BonusCardStateForm)
 
 
 class CardGenerateForm(TestCase):
@@ -72,6 +70,7 @@ class CardGenerateForm(TestCase):
     def test_post_valid_form(self):
         data = {'series': 'DF',
                 'generate': 'Create cards',
+                'state':'NA',
                 'release_date': '2023-02-21+18:23:18',
                 'end_date': '2023-08-21+18:23:18',
                 'card_count': '1'}

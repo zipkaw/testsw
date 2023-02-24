@@ -47,11 +47,12 @@ class CardDetail(generics.RetrieveAPIView):
     serializer_class = BonusCardDetailSerializer
     lookup_field = 'number'
     filterset_class = OrdersFilter
-    
+
     def get_object(self):
         card_obj = Card.objects.filter(
             **{self.lookup_field: self.kwargs[self.lookup_field]})
-        orders = self.filter_queryset(Order.objects.all()).prefetch_related('products')
+        orders = self.filter_queryset(
+            Order.objects.all()).prefetch_related('products')
         card_obj = card_obj.prefetch_related(Prefetch(queryset=orders,
                                                       lookup='orders'))
         return card_obj.first()

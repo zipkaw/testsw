@@ -37,7 +37,7 @@ class OrdersSerializer(serializers.ModelSerializer):
 class CreateOrderSerializer(serializers.ModelSerializer):
 
     products = serializers.PrimaryKeyRelatedField(
-        many=True, 
+        many=True,
         queryset=Product.objects.all())
 
     class Meta:
@@ -49,8 +49,7 @@ class CreateOrderSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         products = validated_data.pop('products')
         card_number = self.context['view'].kwargs['number']
-        products_total_price = 0
-        
+        products_total_price = 0        
         try:
             last_order_num = str(int(Order.objects.latest('pk').num)+1)
         except Order.DoesNotExist:
