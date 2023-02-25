@@ -22,7 +22,7 @@
     
 После успешной сборки контейнеров нужно запустить пару комманд для заполнения базы данных тестовыми данными: 
 
-    sudo docker compose exec web /test_sellwin/manage.py up migrate # Запуск миграций для БД
+    sudo docker compose exec web /test_sellwin/manage.py migrate # Запуск миграций для БД
     
     sudo docker compose exec web /test_sellwin/manage.py db-json --fill # Заполнение базы данных тестовыми данными
     
