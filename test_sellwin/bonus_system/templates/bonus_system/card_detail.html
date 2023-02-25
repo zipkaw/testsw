@@ -1,27 +1,46 @@
-{% extends 'base.html' %} 
+{% extends 'base.html' %}
 
 {% block content %}
 <h1 class="text-2xl"><strong>{{ card.number }}</strong></h1>
 <form action="" method="post">
     {% csrf_token %}
     {{ form }}
-    <input type="submit" value="Submit", name="change status">
+    <input type="submit" value="Submit" , name="change status">
 </form>
 {%if orders%}
-    {% for order in orders %}
-        <p>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-2">
+            Order Num 
+        </div>
+        <div class="col-sm-2">
+            Order Date
+        </div>
+    </div>
+</div>
+{% for order in orders %}
+<p>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-2">
             {{order.num}}
-        </p>
-    {%endfor%}
+        </div>
+        <div class="col-sm-2">
+            {{order.date}}
+        </div>
+    </div>
+</div>
+</p>
+{%endfor%}
 {%else%}
-    <p>
-        There are no any orders
-    </p>
+<p>
+    There are no any orders
+</p>
 {%endif%}
 {%if not card.deleted%}
 <form action="{{card.get_absolute_url_to_delete}}" method="post">
     {% csrf_token %}
-    <input type="submit" value="Delete", name="delete">
+    <input type="submit" value="Delete" , name="delete">
 </form>
 {%endif%}
 {% endblock %}

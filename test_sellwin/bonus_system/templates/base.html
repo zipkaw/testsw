@@ -33,6 +33,7 @@
           <br>
           <a href="{%url 'api'%}">API</a>
           <form method="get" action="{%url 'search'%}">
+            Search:
             <input class="searchfield" name="search" type="text" value="{{ request.GET.q }}">
           </form>
         </ul>

@@ -16,24 +16,27 @@ class BonusCardDetailView(generic.DetailView, FormMixin):
     model = Card
     form_class = BonusCardStateForm
     template_name = 'bonus_system/card_detail.html'
+    queryset = Card.objects.all()
+
+    def get_object(self):
+        self.object = Card.objects.filter(
+            pk=self.kwargs.get('pk')).prefetch_related('orders').first()
+        return self.object
 
     def get_success_url(self) -> str:
-        self.object = self.get_object()
-        return reverse('card', args=[self.get_object().pk])
+        return reverse('card', args=[self.object.pk])
 
     def get_context_data(self, **kwargs):
-        self.object = self.get_object()
         context = super().get_context_data(**kwargs)
         context['orders'] = Order.objects.filter(card=context['card'])
         context['form'] = self.get_form()
         return context
 
     def get_initial(self):
-        current_state = self.get_object().state
+        current_state = self.object.state
         return {'state': current_state}
 
     def form_valid(self, form):
-        self.object = self.get_object()
         cleaned_data = form.cleaned_data
         self.object.state = cleaned_data['state']
         self.object.save()

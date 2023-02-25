@@ -33,7 +33,7 @@ class CardList(generics.ListAPIView):
 
 
 class OrderList(generics.ListAPIView):
-    queryset = Order.objects.all()
+    queryset = Order.objects.all().prefetch_related('products')
     serializer_class = OrdersSerializer
 
 
