@@ -5,5 +5,5 @@ __pycache__
 db.sqlite3
 media
 .vscode
-test_data_json.zip
+
 
