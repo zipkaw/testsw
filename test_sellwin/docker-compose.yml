@@ -9,8 +9,8 @@ services:
     ports:
       - 8000:8000
     env_file:
-      - web.env
-      - db.env
+      - env/web.env
+      - env/db.env
     depends_on:
       - db
   db:
@@ -18,7 +18,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     env_file:
-      - db.env
+      - env/db.env
     environment:
       - POSTGRES_HOST_AUTH_METHOD=trust
     ports: 
