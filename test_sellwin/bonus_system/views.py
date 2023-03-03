@@ -150,6 +150,7 @@ class TrashDetailView(generic.DetailView, UpdateFieldsMixin):
 
 class SearchListView(generic.ListView):
     model = Card
+    template_name = 'bonus_system/card_list.html'
 
     def get_queryset(self):
         query = self.request.GET.get('search')
