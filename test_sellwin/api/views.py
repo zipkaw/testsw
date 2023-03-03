@@ -79,5 +79,6 @@ class CreateOrders(generics.CreateAPIView):
         return context
 
     def get_object(self):
-        obj = Order.objects.filter(**{'card': self.kwargs[self.lookup_field]})
+        obj = Order.objects.filter(
+            **{'card': self.kwargs[self.lookup_field]})
         return obj

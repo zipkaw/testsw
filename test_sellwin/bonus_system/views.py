@@ -43,6 +43,7 @@ class BonusCardDetailView(generic.DetailView, FormMixin):
         return super().form_valid(form)
 
     def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
         form = self.get_form()
         if 'change status' in request.POST:
             if form.is_valid():

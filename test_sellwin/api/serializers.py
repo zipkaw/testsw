@@ -54,14 +54,18 @@ class CreateOrderSerializer(serializers.ModelSerializer):
         products = validated_data.pop('products')
         card_number = self.context['view'].kwargs['number']
         products_total_price = 0
+        order_queryset = Order.objects.all()
+
         try:
-            last_order_num = str(int(Order.objects.latest('pk').num)+1)
+            last_order_num = str(int(order_queryset.latest('pk').num)+1)
         except Order.DoesNotExist:
             last_order_num = '0'
+
         for product in products:
             products_total_price += product.discount_price
 
         card = get_object_or_404(Card, number=card_number)
+
         order = Order(card=card,
                       **validated_data,
                       sell_price=products_total_price,

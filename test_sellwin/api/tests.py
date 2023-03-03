@@ -2,6 +2,8 @@ from rest_framework.test import APITestCase, APIClient
 from rest_framework import status
 from rest_framework.reverse import reverse
 
+import json
+
 from .models import Card, Order, Product
 from .serializers import BonusCardDetailSerializer
 
@@ -51,24 +53,33 @@ class CreateOrderTest(APITestCase):
             price=20,
             discount_price=16)
         self.valid_payload = {
-            'products': [self.product1.id, self.product2.id],
+            'products': self.product1.id,
         }
         self.invalid_payload = {
             'products': [],
         }
 
     def test_create_valid_order(self):
-        url = reverse('create-order', kwargs={'number': self.card.number})
+        url = reverse(
+            'create-order',
+            kwargs={'number': self.card.number})
         response = self.client.post(
-            url, data=self.valid_payload, format='json')
+            url,
+            data=json.dumps(self.valid_payload),
+            format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Order.objects.count(), 1)
         self.assertEqual(self.card.total_orders, 28)
 
     def test_create_invalid_order(self):
-        url = reverse('create-order', kwargs={'number': self.card.number})
+        url = reverse(
+            'create-order',
+            kwargs={'number': self.card.number})
         response = self.client.post(
-            url, data=self.invalid_payload, format='json')
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+            url,
+            data=json.dumps(self.invalid_payload),
+            format='json')
+        self.assertEqual(response.status_code,
+                         status.HTTP_400_BAD_REQUEST)
         self.assertEqual(Order.objects.count(), 0)
         self.assertEqual(self.card.total_orders, 0)
